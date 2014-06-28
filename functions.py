@@ -1,4 +1,5 @@
 from math import *
+from collections import Counter
 
 def nextPrime(n):
 	m = n + 1 
@@ -30,3 +31,76 @@ def isPalindrome(n):
 			return False	
 	
 	return True
+
+
+def nthTriangleNumber(n):
+	return (n * (n+1))/2
+
+def getDivisors(n):
+	if n == 1: return [1]
+	
+	divisors = [1]
+	root = int(sqrt(n))
+
+	for i in range(2, root + 1):
+		if n % i == 0: 
+			divisors.append(i)
+			divisors.append(n/i)
+
+	if root * root == n: divisors.remove(root) #remove dupe
+
+	divisors.append(n)
+	return divisors
+
+'''
+returns a list of prime factors eg for n = 8 method returns[2,2,2]
+'''
+
+def getPrimeFactors(n):
+	return getPrimeFactorsAux(n, 2, [])
+
+def getPrimeFactorsAux(n, prime, resultsList):
+
+	while (n % prime == 0):
+		resultsList.append(prime)
+		n = n / prime
+
+	if n == 1: return resultsList
+	else: return getPrimeFactorsAux(n, nextPrime(prime), resultsList)
+	
+def getPrimes(n):
+
+	resultsList = []
+	prime = 2
+
+	while(n != 1):
+		while (n%prime == 0):
+			resultsList.append(prime)
+			n = n/prime
+		prime = nextPrime(prime)
+
+	return resultsList
+	
+'''
+prime factors - any combination of prime factors will give number of divisors
+
+therefore use simple combinatorics to count divisors:
+
+eg imagine n = 2^4 + 3^1
+you can choose 0-4 twos and 0-1 threes => number of divisors = 5*2 = 10
+
+this method returns an int
+'''
+def countDivisors(n):
+	primeFactors = getPrimes(n)	
+	counter = Counter(primeFactors)
+
+	divisors = 1
+
+	for prime in counter:
+		divisors = divisors * (counter[prime] + 1)
+
+	return divisors
+
+
+
